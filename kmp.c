@@ -5,6 +5,8 @@
 void kmp (char *s , char *t , int* next){
   int s_len = strlen(s);
   int t_len = strlen(t);
+  printf("--->s:%d, t: %d,", s_len, t_len);
+  
   int j = 0;
   for(int i = 0 ; i < s_len ; i++) {
     if(s[i] == t[j]){
@@ -14,16 +16,18 @@ void kmp (char *s , char *t , int* next){
         j = next[0];
       } else {
         j = next[j-1];
+        i--;
       }
     }
     if(j == t_len){
-      printf("%d~%d\n",i-j+1,i+1);
+      printf("%d~%d\n",i-j+1,i);
       break;
     } 
   }
   if(j != t_len){
-    printf("失败");
+    printf("失败\n");
   }  
+  
 }
 
 int * get_next(char *source){
@@ -44,15 +48,16 @@ int * get_next(char *source){
       
     }
   }
-  for(int i = 0 ; i < 10 ; i++){
+  for(int i = 0 ; i < strlen(source) ; i++){
     printf(" %d",next[i]);
   }  
+  printf("\n");
   return next;  
 }
 
 int main(){
-  char s[14] = "ababcabcacbab";
-  char t[6] = "abcac";
+  char s[8] = "abacabad";
+  char t[4] = "abad";
   
   int *next = get_next(t);
 

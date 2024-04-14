@@ -5,7 +5,7 @@
 #define LISTINCREMENT    10
 
 typedef struct{
-  int *elem;
+ int *elem;
   int length;
   int listsize;
   
@@ -27,7 +27,7 @@ void create(Sqlist *L){
   printf("\n打印完成\n");
 }
 
-void delete_the_same(Sqlist *L){
+void delete_the_same1(Sqlist *L){
   int i = 0 ;
   int length_replace = LIST_INIT_SIZE;
   
@@ -38,27 +38,42 @@ void delete_the_same(Sqlist *L){
       i++;
     
     } else {
-      
       for(int j = i ;j<length_replace-1;j++){
         
         (*L).elem[j] = (*L).elem[j+1];
-      
       }
       length_replace--;
     }
   
   }
   
-  for(int j = 0 ; j < length_replace ; j++) {
+   for(int j = 0 ; j < length_replace ; j++) {
   
-    printf(" %d",(*L).elem[j]);
+     printf(" %d",(*L).elem[j]);
   
-  }
-  printf("\n");  
+   }
+   printf("\n");  
 
 }
 
-void delete_0(Sqlist *L){
+void delete_the_same2(Sqlist *L) {
+  int j = 0 ;
+  for(int i = 0 ; i < LIST_INIT_SIZE ; i++) {
+    if((*L).elem[j] != (*L).elem[i]) {
+      j++;
+      (*L).elem[j] = (*L).elem[i];
+    } 
+  }
+  (*L).length = j+1;
+
+  for(int k = 0 ; k < (*L).length ; k++){
+    printf(" %d",(*L).elem[k]);
+    
+  }
+  printf("\n");
+}
+
+void delete_0_1(Sqlist *L){
   int i = 0 ;
   int length_replace = LIST_INIT_SIZE;
 
@@ -88,6 +103,21 @@ void delete_0(Sqlist *L){
   printf("\n");
 
 }
+
+void delete_0_2(Sqlist *L){
+  int j = 0 ;
+  for(int i = 0 ; i < LIST_INIT_SIZE ; i++) {
+    if((*L).elem[i] != 0){
+      (*L).elem[j] = (*L).elem[i];
+      j++;
+    }
+  }    
+  for(int i = 0; i < j; i++) {
+    printf(" %d",(*L).elem[i]);
+  }
+  printf("\n");
+}
+
 void bubble_sort(Sqlist *L) {
   for(int i = 0 ; i < LIST_INIT_SIZE - 1 ; i++ ){
     
@@ -173,7 +203,7 @@ void insert_sort(Sqlist *L) {
   printf("\n");
 }
 
-void pattern_match(Sqlist *L){
+void bf_pattern_match(Sqlist *L){
   int len; 
   int *s;
   printf("请输入待匹配子串的长度:");
@@ -198,14 +228,74 @@ void pattern_match(Sqlist *L){
   } 
   printf("\n");
 }
+
+void kmp_pattern_match(Sqlist *L, int len){
+  int *s;
+  for(int i = 0 ; i < len ; i++){
+    printf("请输入第%d个元素:",i+1);
+    scanf("%d",s+i);
+  }  
+  
+  for(int i = 0 ; i < LIST_INIT_SIZE ; i++) {
+    printf(" %d",(*L).elem[i]);
+  }
+  printf("\n");
+  for(int i = 0 ; i < len ; i++)  {
+    printf(" %d",s[i]);
+  } 
+  printf("\n");
+  int *next = (int*)malloc(sizeof(int)*len);
+  for(int i = 0 ; i < len ; i++){
+    if(i == 0) {
+      next[i] =0;
+    } else if(next[i-1]==0 && s[0] == s[i] ) {
+      next[i] = 1;
+    } else if(next[i-1]==0 && s[0] != s[i]) {
+      next[i] = 0;
+    } else if(next[i-1]!=0 && s[next[i-1]] == s[i]){
+      next[i] = next[i-1]+1;
+    } else if(next[i-1]!=0 && s[next[i-1]] != s[i]){
+      next[i] = 0;
+    }
+    printf(" %d",next[i]);
+  }
+  printf("\n");
+  int j = 0;
+  for(int i = 0 ; i < LIST_INIT_SIZE ; i++) {
+    if((*L).elem[i] == s[j]){
+      j++;
+    }else {
+      if(j == 0){
+        j = next[0];
+      } else {
+        j = next[j-1];
+        i--;
+      }
+    }
+    if(j == len) {
+      printf("\n %d ~ %d \n",i-j+1,i);
+      break;
+    }
+    printf(" %d", j);
+  }
+  
+  free(next);  
+  next = NULL;
+}
+
 int main(){
   Sqlist L;
   create(&L);
-//  delete_the_same(&L);
-//  delete_0(&L);
+//  delete_the_same2(&L);
+//  delete_0_2(&L);
 //  bubble_sort(&L);
 //  insert_list(&L);
 //  select_sort(&L);
 //  insert_sort(&L);
-  pattern_match(&L);
+//  pattern_match(&L);
+  int len;
+  printf("请输入子串长度:");
+  scanf("%d",&len);
+  kmp_pattern_match(&L,len);
+  
 }
